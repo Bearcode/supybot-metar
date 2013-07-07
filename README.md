@@ -9,4 +9,5 @@ Usage
 =====
 
 @metar <ICAO code> -- sends raw report to the channel
+
 @imetar <ICAO code> -- sends decoded report as private message
