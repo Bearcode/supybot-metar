@@ -42,7 +42,6 @@ import urllib2
 # In case we're being reloaded.
 reload(config)
 reload(plugin)
-reload(pymetar)
 reload(re)
 reload(urllib2)
 # Add more reloads here if you add third-party modules and want them to be
