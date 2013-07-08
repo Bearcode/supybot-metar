@@ -33,6 +33,7 @@ except:
     _ = lambda x:x
 
 import pymetar
+import re
 
 RAW_METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations/"
 
@@ -50,12 +51,17 @@ class METAR(callbacks.Plugin):
 
         Shows METAR information for <ICAO airport code>.
         """
+
+        regex = re.compile("^[a-zA-Z]{4}$")
+        if not regex.match(station):
+            irc.reply(station + " can't be a valid ICAO code")
+            return 1
+
         try:
             fetcher = pymetar.ReportFetcher(station)
             report = fetcher.FetchReport()
         except Exception, e:
-            irc.reply("Could not fetch report for " + station + ". Try again later.")
-            irc.reply(str(e))
+            irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
         report_lines = report.fullreport.split("\n")
@@ -71,12 +77,17 @@ class METAR(callbacks.Plugin):
         
            Display raw METAR information for <ICAO airport code>
         """
+
+        regex = re.compile("^[a-zA-Z]{4}$")
+        if not regex.match(station):
+            irc.reply(station + " can't be a valid ICAO code")
+            return 1
+
         try:
             fetcher = pymetar.ReportFetcher(station, RAW_METAR_URL)
             report = fetcher.FetchReport()
         except Exception, e:
-            irc.reply("Could not fetch report for " + station + ". Try again later.")
-            irc.reply(str(e))
+            irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
         result = " ".join( report.fullreport.split("\n") )
