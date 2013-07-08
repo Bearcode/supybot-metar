@@ -3,8 +3,6 @@ supybot-metar
 
 METAR plugin for supybot/limnoria
 
-Depends on pymetar module (http://www.schwarzvogel.de/software-pymetar.shtml)
-
 Usage
 =====
 

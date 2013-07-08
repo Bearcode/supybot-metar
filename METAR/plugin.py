@@ -32,10 +32,11 @@ except:
     # without the i18n module
     _ = lambda x:x
 
-import pymetar
+import urllib2
 import re
 
-RAW_METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations/"
+METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/decoded/%s.TXT"
+RAW_METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT"
 
 class METAR(callbacks.Plugin):
     """Add the help for "@plugin help METAR" here
@@ -58,13 +59,17 @@ class METAR(callbacks.Plugin):
             return 1
 
         try:
-            fetcher = pymetar.ReportFetcher(station)
-            report = fetcher.FetchReport()
+            station = station.upper()
+            url = METAR_URL % station
+            urllib2.install_opener(
+                    urllib2.build_opener(urllib2.ProxyHandler, urllib2.HTTPHandler))
+            request = urllib2.urlopen(url)
+            report = request.read()
         except Exception, e:
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        report_lines = report.fullreport.split("\n")
+        report_lines = report.split("\n")
         for line in report_lines:
             if line: 
                 irc.reply(line, to=msg.nick, prefixNick=False,
@@ -84,13 +89,17 @@ class METAR(callbacks.Plugin):
             return 1
 
         try:
-            fetcher = pymetar.ReportFetcher(station, RAW_METAR_URL)
-            report = fetcher.FetchReport()
+            station = station.upper()
+            url = RAW_METAR_URL % station
+            urllib2.install_opener(
+                    urllib2.build_opener(urllib2.ProxyHandler, urllib2.HTTPHandler))
+            request = urllib2.urlopen(url)
+            report = request.read()
         except Exception, e:
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        result = " ".join( report.fullreport.split("\n") )
+        result = " ".join( report.split("\n") )
         irc.reply(result)
 
     metar = wrap(metar, ["something"])
