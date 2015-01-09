@@ -32,7 +32,7 @@ except:
     # without the i18n module
     _ = lambda x:x
 
-import urllib2
+import urllib3
 import re
 
 METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/decoded/%s.TXT"
@@ -46,6 +46,7 @@ class METAR(callbacks.Plugin):
     def __init__(self, irc):
         self.__parent = super(METAR, self)
         self.__parent.__init__(irc)
+        self._http = urllib3.PoolManager()
 
     def imetar(self, irc, msg, args, station):
         """[<ICAO airport code>]
@@ -61,15 +62,12 @@ class METAR(callbacks.Plugin):
         try:
             station = station.upper()
             url = METAR_URL % station
-            urllib2.install_opener(
-                    urllib2.build_opener(urllib2.ProxyHandler, urllib2.HTTPHandler))
-            request = urllib2.urlopen(url)
-            report = request.read()
+            reply = self._http.request('GET', url)
         except Exception as e:
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        report_lines = report.split("\n")
+        report_lines = reply.data.split("\n")
         for line in report_lines:
             if line: 
                 irc.reply(line, to=msg.nick, prefixNick=False,
@@ -91,15 +89,13 @@ class METAR(callbacks.Plugin):
         try:
             station = station.upper()
             url = RAW_METAR_URL % station
-            urllib2.install_opener(
-                    urllib2.build_opener(urllib2.ProxyHandler, urllib2.HTTPHandler))
-            request = urllib2.urlopen(url)
-            report = request.read()
+            url = METAR_URL % station
+            reply = self._http.request('GET', url)
         except Exception as e:
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        result = " ".join( report.split("\n") )
+        result = " ".join( reply.data.split("\n") )
         irc.reply(result)
 
     metar = wrap(metar, ["something"])
