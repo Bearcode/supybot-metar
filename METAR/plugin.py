@@ -35,8 +35,10 @@ except:
 import urllib3
 import re
 
+
 METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/decoded/%s.TXT"
 RAW_METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT"
+
 
 class METAR(callbacks.Plugin):
     """Add the help for "@plugin help METAR" here
@@ -48,14 +50,20 @@ class METAR(callbacks.Plugin):
         self.__parent.__init__(irc)
         self._http = urllib3.PoolManager()
 
+    def valid_station_code(s):
+       	regex = re.compile("^[a-zA-Z]{4}$")
+        if not regex.match(station):
+            return False
+        else:
+            return True
+
     def imetar(self, irc, msg, args, station):
         """[<ICAO airport code>]
 
         Shows METAR information for <ICAO airport code>.
         """
 
-        regex = re.compile("^[a-zA-Z]{4}$")
-        if not regex.match(station):
+        if not self.valid_station_code(station):
             irc.reply(station + " can't be a valid ICAO code")
             return 1
 
@@ -81,8 +89,7 @@ class METAR(callbacks.Plugin):
            Display raw METAR information for <ICAO airport code>
         """
 
-        regex = re.compile("^[a-zA-Z]{4}$")
-        if not regex.match(station):
+        if not self.valid_station_code(station):
             irc.reply(station + " can't be a valid ICAO code")
             return 1
 
