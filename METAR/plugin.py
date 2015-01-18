@@ -49,10 +49,10 @@ class METAR(callbacks.Plugin):
         self.__parent = super(METAR, self)
         self.__parent.__init__(irc)
         self._http = urllib3.PoolManager()
+        self._station_regex = re.compile("^[a-zA-Z]{4}$")
 
-    def valid_station_code(s):
-       	regex = re.compile("^[a-zA-Z]{4}$")
-        if not regex.match(station):
+    def _valid_station_code(self, station):
+        if not self._station_regex.match(station):
             return False
         else:
             return True
@@ -63,7 +63,7 @@ class METAR(callbacks.Plugin):
         Shows METAR information for <ICAO airport code>.
         """
 
-        if not self.valid_station_code(station):
+        if not self._valid_station_code(station):
             irc.reply(station + " can't be a valid ICAO code")
             return 1
 
