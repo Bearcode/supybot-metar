@@ -89,7 +89,7 @@ class METAR(callbacks.Plugin):
            Display raw METAR information for <ICAO airport code>
         """
 
-        if not self.valid_station_code(station):
+        if not self._valid_station_code(station):
             irc.reply(station + " can't be a valid ICAO code")
             return 1
 
