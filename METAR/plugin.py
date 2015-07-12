@@ -75,7 +75,7 @@ class METAR(callbacks.Plugin):
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        report_lines = reply.data.split("\n")
+        report_lines = (reply.data).decode().split("\n")
         for line in report_lines:
             if line: 
                 irc.reply(line, to=msg.nick, prefixNick=False,
@@ -96,13 +96,12 @@ class METAR(callbacks.Plugin):
         try:
             station = station.upper()
             url = RAW_METAR_URL % station
-            url = METAR_URL % station
             reply = self._http.request('GET', url)
         except Exception as e:
             irc.reply("Could not fetch report for " + station + ". Make sure your code is correct and try again later.")
             return 1
 
-        result = " ".join( reply.data.split("\n") )
+        result = " ".join((reply.data.decode()).split("\n"))
         irc.reply(result)
 
     metar = wrap(metar, ["something"])
