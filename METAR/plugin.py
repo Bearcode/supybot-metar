@@ -77,7 +77,7 @@ class METAR(callbacks.Plugin):
 
         report_lines = (reply.data).decode().split("\n")
         for line in report_lines:
-            if line: 
+            if line:
                 irc.reply(line, to=msg.nick, prefixNick=False,
                           private=True)
 
@@ -85,7 +85,7 @@ class METAR(callbacks.Plugin):
 
     def metar(self, irc, msg, args, station):
         """<ICAO airport code>
-        
+
            Display raw METAR information for <ICAO airport code>
         """
 
