@@ -36,8 +36,8 @@ import urllib3
 import re
 
 
-METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/decoded/%s.TXT"
-RAW_METAR_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT"
+METAR_URL = "http://tgftp.nws.noaa.gov/data/observations/metar/decoded/%s.TXT"
+RAW_METAR_URL = "http://tgftp.nws.noaa.gov/data/observations/metar/stations/%s.TXT"
 
 
 class METAR(callbacks.Plugin):
